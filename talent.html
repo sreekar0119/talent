@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Showcase - Interactive App Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with a Subtle Teal Accent -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive dashboard and project summary. The primary section is a functional prototype of the "Recruiter Discovery Engine," allowing users to interact with filters and see dynamic results. This hands-on approach was chosen because the discovery feature is the core value proposition of the app for recruiters. Subsequent sections visually break down the User Flows, Key Features, and Monetization strategy using structured layouts like process flows and cards. This transforms the static report into an engaging, explorable experience for stakeholders, prioritizing demonstration of the core functionality over a simple text summary. -->
+    <!-- Visualization & Content Choices: 1. Recruiter Discovery Engine: Report Info -> Recruiter filtering process. Goal -> Demonstrate core app functionality. Presentation -> Interactive filter controls (dropdown, slider, text input) and a dynamic grid of talent cards. Interaction -> Users change filter values, and the displayed talent grid updates in real-time. Justification -> This provides a tangible feel for the app's primary feature. Library -> Vanilla JS for DOM manipulation. 2. User Flows: Report Info -> Talent & Recruiter journeys. Goal -> Explain user processes clearly. Presentation -> Two horizontal, step-by-step process flow diagrams built with styled HTML/CSS. Interaction -> None. Justification -> Visual diagrams are more intuitive for understanding processes than paragraphs of text. Library -> HTML/CSS with Tailwind. 3. Monetization Strategy: Report Info -> Pricing tiers. Goal -> Clearly present business model. Presentation -> A three-column grid of styled pricing cards. Interaction -> Subtle hover effects. Justification -> This is a standard, easily scannable UI pattern for pricing information. Library -> HTML/CSS with Tailwind. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #3f3d56;
+        }
+        .section-title {
+            color: #3f3d56;
+        }
+        .btn-primary {
+            background-color: #008080;
+            color: #ffffff;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #006666;
+        }
+        .talent-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .talent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            position: relative;
+            flex-grow: 1;
+        }
+        .flow-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.5rem;
+            height: 2px;
+            background-color: #cbd5e0;
+        }
+        .pricing-card {
+            border: 1px solid #e2e8f0;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #008080;
+            cursor: pointer;
+            border-radius: 50%;
+            margin-top: -6px;
+        }
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #008080;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold section-title">Talent Showcase</h1>
+            <nav class="space-x-6 hidden md:flex">
+                <a href="#discover" class="text-gray-600 hover:text-teal-600">Discover</a>
+                <a href="#upload" class="text-gray-600 hover:text-teal-600">Upload Content</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-teal-600">How It Works</a>
+                <a href="#features" class="text-gray-600 hover:text-teal-600">Features</a>
+                <a href="#monetization" class="text-gray-600 hover:text-teal-600">Pricing</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 section-title">Where Creativity Gets Discovered</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                This is an interactive prototype of Talent Showcase, a professional network designed for creatives to showcase their work and for recruiters to find the perfect talent. Explore the features below to see how it works.
+            </p>
+        </section>
+
+        <!-- Recruiter Discovery Engine -->
+        <section id="discover" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 section-title">Recruiter Discovery Engine</h3>
+            <p class="text-center text-gray-600 mb-10">Interact with the filters below to see how a recruiter would discover talent on the platform. The talent feed will update in real-time.</p>
+
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <!-- Filters -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 items-end">
+                    <div>
+                        <label for="skill-filter" class="block text-sm font-medium text-gray-700 mb-1">Skill</label>
+                        <select id="skill-filter" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            <option value="all">All Skills</option>
+                            <option value="Guitarist">Guitarist</option>
+                            <option value="Copywriter">Copywriter</option>
+                            <option value="Video Editor">Video Editor</option>
+                            <option value="Music Producer">Music Producer</option>
+                            <option value="Vocalist">Vocalist</option>
+                            <option value="Songwriter">Songwriter</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="location-filter" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input type="text" id="location-filter" placeholder="e.g., New York" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label for="reach-filter" class="block text-sm font-medium text-gray-700 mb-1">Minimum Reach Score: <span id="reach-value" class="font-bold text-teal-600">50</span></label>
+                        <input type="range" id="reach-filter" min="0" max="100" value="50" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
+                    </div>
+                    <div class="flex justify-center md:justify-end">
+                         <button id="reset-filters" class="w-full md:w-auto px-6 py-2.5 rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 transition">Reset</button>
+                    </div>
+                </div>
+
+                <!-- Talent Feed -->
+                <div id="talent-feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Talent cards will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Talent Content Upload Section -->
+        <section id="upload" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 section-title">Talent Content Upload</h3>
+            <p class="text-center text-gray-600 mb-10">This is how a creative professional would upload their work. Fill out the form to simulate creating a new portfolio piece.</p>
+
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+                <form id="upload-form">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Portfolio Media</label>
+                            <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                <div class="space-y-1 text-center">
+                                    <div class="text-4xl text-gray-400">&#128228;</div>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-teal-600 hover:text-teal-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-teal-500">
+                                            <span>Upload a file</span>
+                                            <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">Video, Audio, PNG, JPG, PDF up to 50MB</p>
+                                    <p id="file-name" class="text-sm font-medium text-teal-700 pt-2"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="post-description" class="block text-sm font-medium text-gray-700">Description</label>
+                            <div class="mt-1">
+                                <textarea id="post-description" name="description" rows="3" class="shadow-sm focus:ring-teal-500 focus:border-teal-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2" placeholder="Describe your work, the process, and what it showcases..."></textarea>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="skill-tags" class="block text-sm font-medium text-gray-700">Skill Tags</label>
+                            <input type="text" name="skill-tags" id="skill-tags" class="shadow-sm focus:ring-teal-500 focus:border-teal-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2" placeholder="e.g., #guitarist, #copywriting, #vfx">
+                            <p class="mt-2 text-sm text-gray-500">Separate tags with commas. These are crucial for discoverability.</p>
+                        </div>
+                    </div>
+                    <div class="pt-5">
+                        <div class="flex justify-end">
+                            <button type="submit" class="w-full md:w-auto py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                                Add to Portfolio
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                 <div id="upload-success-message" class="hidden mt-4 p-4 bg-green-100 border border-green-200 text-green-800 rounded-md">
+                    <strong>Success!</strong> Your new portfolio piece has been added. Recruiters can now see your latest work.
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-10 section-title">How It Works: User Journeys</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Talent Flow -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h4 class="text-2xl font-bold mb-6 text-center">The Talent's Journey</h4>
+                    <div class="flex flex-col space-y-8">
+                        <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg">1</div>
+                            <h5 class="font-semibold mt-2">Onboarding & Profile Setup</h5>
+                            <p class="text-sm text-gray-600">Sign up and build a skill-focused profile to showcase your creative abilities.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg">2</div>
+                            <h5 class="font-semibold mt-2">Showcase Work</h5>
+                            <p class="text-sm text-gray-600">Regularly post media (videos, audio, docs) and tag it with relevant skills to build your portfolio.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg">3</div>
+                            <h5 class="font-semibold mt-2">Grow Your Reach</h5>
+                            <p class="text-sm text-gray-600">Engage with the community and monitor your "Reach" score to increase visibility.</p>
+                        </div>
+                         <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg">4</div>
+                            <h5 class="font-semibold mt-2">Get Hired</h5>
+                            <p class="text-sm text-gray-600">Connect with recruiters who discover your work and land your next creative project.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recruiter Flow -->
+                 <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h4 class="text-2xl font-bold mb-6 text-center">The Recruiter's Journey</h4>
+                    <div class="flex flex-col space-y-8">
+                        <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-lg">1</div>
+                            <h5 class="font-semibold mt-2">Onboarding & Setup</h5>
+                            <p class="text-sm text-gray-600">Create a company or individual profile to start searching for talent.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-lg">2</div>
+                            <h5 class="font-semibold mt-2">Discover Talent</h5>
+                            <p class="text-sm text-gray-600">Use the powerful Discovery Engine with advanced filters to find the perfect skill set.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-lg">3</div>
+                            <h5 class="font-semibold mt-2">Evaluate & Outreach</h5>
+                            <p class="text-sm text-gray-600">Review portfolios of actual work and initiate conversations directly with talent.</p>
+                        </div>
+                         <div class="text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-lg">4</div>
+                            <h5 class="font-semibold mt-2">Make a Hire</h5>
+                            <p class="text-sm text-gray-600">Discuss project details and hire top creative professionals through the platform.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Features -->
+        <section id="features" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-10 section-title">Key App Features</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                 <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="font-bold text-lg mb-2">Dual User Onboarding</h4>
+                    <p class="text-gray-600">Separate, tailored sign-up flows for "Talent" and "Recruiters".</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="font-bold text-lg mb-2">Dynamic Talent Feed</h4>
+                    <p class="text-gray-600">A personalized, scrollable feed for creatives to network and find inspiration.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="font-bold text-lg mb-2">Skill-Tagged Portfolios</h4>
+                    <p class="text-gray-600">Profiles are live portfolios where all content is tagged with specific skills.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="font-bold text-lg mb-2">Powerful Discovery Engine</h4>
+                    <p class="text-gray-600">The core feature for recruiters with multi-faceted filtering capabilities.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="font-bold text-lg mb-2">Secure In-App Messaging</h4>
+                    <p class="text-gray-600">Direct and secure communication channel between talent and recruiters.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="font-bold text-lg mb-2">Reach Score & Notifications</h4>
+                    <p class="text-gray-600">Gamified visibility metric and an activity center to track engagement.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Monetization -->
+        <section id="monetization" class="mb-12">
+            <h3 class="text-3xl font-bold text-center mb-10 section-title">Monetization Strategy</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Free Tier -->
+                <div class="pricing-card bg-white p-8 rounded-xl shadow-lg flex flex-col">
+                    <h4 class="text-xl font-bold mb-2">Recruiter Free Tier</h4>
+                    <p class="text-gray-600 mb-4 flex-grow">Basic discovery tools for occasional hiring needs.</p>
+                    <p class="text-3xl font-bold mb-6">$0<span class="text-lg font-medium text-gray-500">/mo</span></p>
+                    <ul class="space-y-2 text-gray-700 mb-6">
+                        <li>&#10003; Limited Searches</li>
+                        <li>&#10003; Limited Messaging</li>
+                        <li>&#10003; Basic Filters</li>
+                    </ul>
+                    <button class="w-full mt-auto py-2 px-4 rounded-md text-teal-600 bg-teal-100 font-semibold">Current Plan</button>
+                </div>
+                <!-- Premium Tier -->
+                <div class="pricing-card bg-white p-8 rounded-xl shadow-2xl flex flex-col ring-2 ring-teal-500">
+                    <h4 class="text-xl font-bold mb-2">Recruiter Premium</h4>
+                    <p class="text-gray-600 mb-4 flex-grow">Unlimited access and advanced tools for serious talent acquisition.</p>
+                    <p class="text-3xl font-bold mb-6">$29<span class="text-lg font-medium text-gray-500">/mo</span></p>
+                     <ul class="space-y-2 text-gray-700 mb-6">
+                        <li>&#10003; Unlimited Searches</li>
+                        <li>&#10003; Unlimited Messaging</li>
+                        <li>&#10003; Advanced Filters</li>
+                        <li>&#10003; View Active Talent</li>
+                    </ul>
+                    <button class="w-full mt-auto py-2 px-4 rounded-md btn-primary">Upgrade</button>
+                </div>
+                <!-- Boost Feature -->
+                 <div class="pricing-card bg-white p-8 rounded-xl shadow-lg flex flex-col">
+                    <h4 class="text-xl font-bold mb-2">Talent "Boost"</h4>
+                    <p class="text-gray-600 mb-4 flex-grow">Increase visibility on a specific portfolio piece for 48 hours.</p>
+                    <p class="text-3xl font-bold mb-6">$5<span class="text-lg font-medium text-gray-500">/one-time</span></p>
+                     <ul class="space-y-2 text-gray-700 mb-6">
+                        <li>&#10003; Top Search Placement</li>
+                        <li>&#10003; Increased Visibility</li>
+                        <li>&#10003; Attract More Recruiters</li>
+                    </ul>
+                    <button class="w-full mt-auto py-2 px-4 rounded-md btn-primary">Boost Post</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t">
+        <div class="container mx-auto px-6 py-4 text-center text-gray-500">
+            <p>&copy; 2025 Talent Showcase. An interactive prototype.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const talentData = [
+                { id: 1, name: 'Elena Vance', skill: 'Guitarist', location: 'New York', reach: 92, image: 'https://placehold.co/400x300/a7c4e1/3f3d56?text=Elena' },
+                { id: 2, name: 'Marcus Cole', skill: 'Copywriter', location: 'London', reach: 85, image: 'https://placehold.co/400x300/e1a7b8/3f3d56?text=Marcus' },
+                { id: 3, name: 'Aisha Khan', skill: 'Video Editor', location: 'New York', reach: 95, image: 'https://placehold.co/400x300/a7e1d1/3f3d56?text=Aisha' },
+                { id: 4, name: 'David Chen', skill: 'Music Producer', location: 'Los Angeles', reach: 88, image: 'https://placehold.co/400x300/e1d1a7/3f3d56?text=David' },
+                { id: 5, name: 'Sofia Rossi', skill: 'Vocalist', location: 'London', reach: 91, image: 'https://placehold.co/400x300/c4a7e1/3f3d56?text=Sofia' },
+                { id: 6, name: 'Liam Murphy', skill: 'Songwriter', location: 'New York', reach: 78, image: 'https://placehold.co/400x300/b8e1a7/3f3d56?text=Liam' },
+                { id: 7, name: 'Chloe Dubois', skill: 'Guitarist', location: 'Paris', reach: 89, image: 'https://placehold.co/400x300/a7b8e1/3f3d56?text=Chloe' },
+                { id: 8, name: 'Ben Carter', skill: 'Video Editor', location: 'London', reach: 82, image: 'https://placehold.co/400x300/e1c4a7/3f3d56?text=Ben' },
+                { id: 9, name: 'Isabella Grant', skill: 'Copywriter', location: 'Los Angeles', reach: 96, image: 'https://placehold.co/400x300/e1a7d1/3f3d56?text=Isabella' },
+                { id: 10, name: 'Kenji Tanaka', skill: 'Music Producer', location: 'Tokyo', reach: 93, image: 'https://placehold.co/400x300/a7e1b8/3f3d56?text=Kenji' },
+                { id: 11, name: 'Olivia Smith', skill: 'Vocalist', location: 'New York', reach: 84, image: 'https://placehold.co/400x300/d1a7e1/3f3d56?text=Olivia' },
+                { id: 12, name: 'Noah Williams', skill: 'Guitarist', location: 'Los Angeles', reach: 76, image: 'https://placehold.co/400x300/a7d1e1/3f3d56?text=Noah' },
+            ];
+
+            const talentFeed = document.getElementById('talent-feed');
+            const skillFilter = document.getElementById('skill-filter');
+            const locationFilter = document.getElementById('location-filter');
+            const reachFilter = document.getElementById('reach-filter');
+            const reachValue = document.getElementById('reach-value');
+            const resetBtn = document.getElementById('reset-filters');
+            const uploadForm = document.getElementById('upload-form');
+            const fileUploadInput = document.getElementById('file-upload');
+            const fileNameDisplay = document.getElementById('file-name');
+            const uploadSuccessMessage = document.getElementById('upload-success-message');
+
+            function renderTalent(filteredData) {
+                talentFeed.innerHTML = '';
+                if (filteredData.length === 0) {
+                    talentFeed.innerHTML = `<p class="col-span-full text-center text-gray-500 py-8">No talent found matching your criteria.</p>`;
+                    return;
+                }
+                filteredData.forEach(talent => {
+                    const card = document.createElement('div');
+                    card.className = 'talent-card';
+                    card.innerHTML = `
+                        <img src="${talent.image}" alt="Photo of ${talent.name}" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold">${talent.name}</h3>
+                            <p class="text-sm text-gray-600">${talent.skill}</p>
+                             <p class="text-sm text-gray-500">${talent.location}</p>
+                            <div class="mt-3 flex items-center justify-between">
+                                <span class="text-sm font-semibold">Reach Score</span>
+                                <span class="px-2 py-1 bg-teal-100 text-teal-700 text-xs font-bold rounded-full">${talent.reach}</span>
+                            </div>
+                        </div>
+                    `;
+                    talentFeed.appendChild(card);
+                });
+            }
+
+            function applyFilters() {
+                const skill = skillFilter.value;
+                const location = locationFilter.value.toLowerCase();
+                const reach = parseInt(reachFilter.value, 10);
+
+                const filteredData = talentData.filter(talent => {
+                    const skillMatch = skill === 'all' || talent.skill === skill;
+                    const locationMatch = talent.location.toLowerCase().includes(location);
+                    const reachMatch = talent.reach >= reach;
+                    return skillMatch && locationMatch && reachMatch;
+                });
+
+                renderTalent(filteredData);
+            }
+            
+            function resetFilters() {
+                skillFilter.value = 'all';
+                locationFilter.value = '';
+                reachFilter.value = 50;
+                reachValue.textContent = 50;
+                applyFilters();
+            }
+
+            skillFilter.addEventListener('change', applyFilters);
+            locationFilter.addEventListener('input', applyFilters);
+            reachFilter.addEventListener('input', () => {
+                reachValue.textContent = reachFilter.value;
+                applyFilters();
+            });
+            resetBtn.addEventListener('click', resetFilters);
+            
+            fileUploadInput.addEventListener('change', () => {
+                if (fileUploadInput.files.length > 0) {
+                    fileNameDisplay.textContent = `Selected: ${fileUploadInput.files[0].name}`;
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            });
+
+            uploadForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                uploadSuccessMessage.classList.remove('hidden');
+                uploadForm.reset();
+                fileNameDisplay.textContent = '';
+                setTimeout(() => {
+                    uploadSuccessMessage.classList.add('hidden');
+                }, 4000);
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            renderTalent(talentData);
+        });
+    </script>
+</body>
+</html>
+
